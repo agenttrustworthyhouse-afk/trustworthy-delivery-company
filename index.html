@@ -1,54 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trustworthy Delivery Company - TDC</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+    header { background:#0056b3; color:white; padding:15px; text-align:center; }
+   .lang-switch { text-align:right; padding:10px; background:#003d82; }
+   .lang-switch button { background:white; border:none; padding:6px 12px; margin:2px; border-radius:4px; cursor:pointer; font-weight:bold; }
+   .container { max-width:900px; margin:20px auto; padding:20px; background:white; border-radius:8px; }
+    input { padding:10px; width:60%; border:1px solid #ccc; border-radius:5px; }
+    button.track { padding:10px 15px; background:#ff6600; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
+    #trackingResult { margin-top:20px; padding:15px; border-radius:8px; display:none; }
+   .contact { background:#f4f4f4; padding:20px; text-align:center; margin-top:30px; border-radius:8px; }
+   .whatsapp { display:inline-block; background:#25D366; color:white; padding:12px 25px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:10px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📦 Trustworthy Delivery Company</h1>
+  <p id="slogan">Fast. Safe. Reliable. Global Delivery.</p>
+</header>
+
+<div class="lang-switch">
+  <button onclick="setLanguage('en')">English</button>
+  <button onclick="setLanguage('pt')">Português</button>
+  <button onclick="setLanguage('es')">Español</button>
+</div>
+
+<div class="container">
+  <section id="track">
+    <h2 id="trackTitle">Track Your Package</h2>
+    <input type="text" id="trackingInput" placeholder="Enter Tracking Number e.g. TDC1001">
+    <button class="track" id="trackBtn" onclick="trackPackage()">Track</button>
+    <div id="trackingResult"></div>
+  </section>
+
+  <section class="contact">
+    <h3 id="contactTitle">Contact Us</h3>
+    <p>📞 <a href="tel:08138344049">0813 834 4049</a></p>
+    <p>✉️ <a href="mailto:support@tdc.ng">support@tdc.ng</a></p>
+    <a href="https://wa.me/2348138344049" class="whatsapp" id="whatsappBtn">💬 Chat on WhatsApp</a>
+  </section>
+</div>
+
 <script>
+const translations = {
+  en: {
+    slogan: "Fast. Safe. Reliable. Global Delivery.",
+    title: "Track Your Package",
+    placeholder: "Enter Tracking Number e.g. TDC1001",
+    button: "Track",
+    contact: "Contact Us",
+    whatsapp: "💬 Chat on WhatsApp",
+    from: "From:",
+    to: "To:",
+    current: "Current Location:",
+    eta: "Estimated Delivery:",
+    progress: "Progress:",
+    notFound: "❌ Tracking number not found. Please check and try again or contact us on WhatsApp 08138344049."
+  },
+  pt: {
+    slogan: "Rápido. Seguro. Confiável. Entrega Global.",
+    title: "Rastrear Sua Encomenda",
+    placeholder: "Digite o Código de Rastreio ex: TDC1001",
+    button: "Rastrear",
+    contact: "Fale Conosco",
+    whatsapp: "💬 Falar no WhatsApp",
+    from: "De:",
+    to: "Para:",
+    current: "Localização Atual:",
+    eta: "Entrega Prevista:",
+    progress: "Progresso:",
+    notFound: "❌ Código de rastreio não encontrado. Verifique e tente novamente ou fale conosco no WhatsApp 08138344049."
+  },
+  es: {
+    slogan: "Rápido. Seguro. Confiable. Entrega Global.",
+    title: "Rastrear Tu Paquete",
+    placeholder: "Ingrese Número de Seguimiento ej: TDC1001",
+    button: "Rastrear",
+    contact: "Contáctanos",
+    whatsapp: "💬 Chatear por WhatsApp",
+    from: "De:",
+    to: "Para:",
+    current: "Ubicación Actual:",
+    eta: "Entrega Estimada:",
+    progress: "Progreso:",
+    notFound: "❌ Número de seguimiento no encontrado. Verifique e intente de nuevo o contáctenos por WhatsApp 08138344049."
+  }
+};
+
+let currentLang = 'en';
+
 const trackingData = {
   "TDC1001": {
-    status: "In Transit", 
-    origin: "New York, USA", 
+    status: {en: "In Transit", pt: "Em Trânsito", es: "En Tránsito"},
+    origin: "New York, USA",
     destination: "São Paulo, Brazil",
-    current: "Miami International Hub, USA", 
-    eta: "Aug 18, 2026", 
+    current: "Miami International Hub, USA",
+    eta: "Aug 18, 2026",
     progress: "55%"
   },
   "TDC1002": {
-    status: "Processing", 
-    origin: "Istanbul, Turkey", 
+    status: {en: "Processing", pt: "Processando", es: "Procesando"},
+    origin: "Istanbul, Turkey",
     destination: "Rio de Janeiro, Brazil",
-    current: "Customs Clearance", 
-    eta: "Aug 20, 2026", 
+    current: "Customs Clearance",
+    eta: "Aug 20, 2026",
     progress: "25%"
   },
   "TDC1003": {
-    status: "Out for Delivery", 
-    origin: "London, UK", 
-    destination: "Brasília, Brazil",
-    current: "São Paulo Distribution Center", 
-    eta: "Today", 
+    status: {en: "Out for Delivery", pt: "Saiu para Entrega", es: "En Camino para Entrega"},
+    origin: "London, UK",
+    destination: "Buenos Aires, Argentina",
+    current: "São Paulo Distribution Center",
+    eta: "Today",
     progress: "90%"
   }
 };
 
+function setLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  document.getElementById('slogan').innerText = t.slogan;
+  document.getElementById('trackTitle').innerText = t.title;
+  document.getElementById('trackingInput').placeholder = t.placeholder;
+  document.getElementById('trackBtn').innerText = t.button;
+  document.getElementById('contactTitle').innerText = t.contact;
+  document.getElementById('whatsappBtn').innerText = t.whatsapp;
+}
+
 function trackPackage() {
+  const t = translations[currentLang];
   const num = document.getElementById('trackingInput').value.toUpperCase();
   const resultDiv = document.getElementById('trackingResult');
   const data = trackingData[num];
-  
+
   if(data) {
     resultDiv.style.display = 'block';
     resultDiv.style.background = '#e8f5e9';
     resultDiv.innerHTML = `
-      <h3>📦 Status: ${data.status}</h3>
-      <p><b>From:</b> ${data.origin}</p>
-      <p><b>To:</b> ${data.destination}</p>
-      <p><b>Current Location:</b> ${data.current}</p>
-      <p><b>Estimated Delivery:</b> ${data.eta}</p>
+      <h3>📦 ${data.status[currentLang]}</h3>
+      <p><b>${t.from}</b> ${data.origin}</p>
+      <p><b>${t.to}</b> ${data.destination}</p>
+      <p><b>${t.current}</b> ${data.current}</p>
+      <p><b>${t.eta}</b> ${data.eta}</p>
       <div style="background:#ddd; border-radius:10px; height:10px; margin-top:10px;">
         <div style="background:#0056b3; width:${data.progress}; height:10px; border-radius:10px;"></div>
       </div>
-      <p style="font-size:12px; margin-top:5px;">Progress: ${data.progress}</p>
+      <p style="font-size:12px; margin-top:5px;">${t.progress} ${data.progress}</p>
     `;
   } else {
     resultDiv.style.display = 'block';
     resultDiv.style.background = '#ffebee';
-    resultDiv.innerHTML = `<p>❌ Tracking number not found. Please check and try again or contact us on WhatsApp 08138344049.</p>`;
+    resultDiv.innerHTML = `<p>${t.notFound}</p>`;
   }
 }
-                                                </script>
+</script>
+
+</body>
+  </html>
